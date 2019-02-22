@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EOL 999999
-
+size_t size = 32;
 int x =0;
 
 int main (int argc, char *argv[])
@@ -19,14 +18,14 @@ FILE *fp = fopen("file.txt", "r");
 	}
 	else
 	{
-		char buffer[EOL];
 		while(getline(&buffer, &size, stdin))
 		{
-		for(i=1;argv[i];i++)
+		for(i=1;argv[i]<size;i++)
 		{
 		i++;
 		for(j=0;j<=i;j++)
 		{
+		j++;
 		printf(argv[x], stdout);
 		}
 		x+2;
