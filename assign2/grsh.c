@@ -51,19 +51,27 @@ return 0;
 //Builtin(3)
 int grsh_path(char **args)
 {
+char *path[100] = {};
+int i=0;
 if (args[1] == NULL)
 {
 write(STDERR_FILENO, error_message, strlen(error_message));
 }
-else {
-if (access("/bin/ls", X_OK) != 0)
+else
+while(args[i] != NULL)
 {
-if (access("/usr/bin/ls", X_OK) !=0)
+if(access(args[i], X_OK)==0)
+{
+strcpy(*path, args[i]);
+i++;
+}
+else
 {
 write(STDERR_FILENO, error_message, strlen(error_message));
+i++;
 }
 }
-}
+return 0;
 }
 
 
