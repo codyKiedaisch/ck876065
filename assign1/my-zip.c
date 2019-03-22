@@ -5,32 +5,52 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EOL 999999
+#define EOL 999999;
 
 int main (int argc, char *argv[])
 {
-size_t size = 32
-int count= 0;
 
-FILE *fp = fopen("file.txt", "r");
-	if(fp == NULL)
-	{
-	printf("my-zip: cannot open file\n");
-	exit(1);
-	}
-	else
-	{
-		char buffer[EOL];
-		while(getline(&buffer, &size, stdin))
-		{
-		for(i=0;argv[i]=argv[i+1];i++)
-		{
-		count++;
-		}
-		fwrite(const void, *argv[0]+count, size, stdout, FILE *file.txt)
-		printf("%s",stdout);
-		}
-	}
+char *line =NULL;
+char numline[500];
+int read;
+size_t len =0;
+
+for(int i =1; i<argc; i++)
+{
+FILE *fp = fopen(argv[i], "r");
+
+if(fp ==NULL)
+{
+exit(1);
+}
+
+while((read =getline(&line, &len, fp)) != -1)
+{
+int count;
+for(int a =0; a< read; a++)
+{
+count =1;
+while(line[a] == line[a+1])
+{
+count++;
+a++;
+}
+
+if(line[a] == '\n')
+{
+printf("|");
+}
+if(line[a] != '|')
+{
+int counts = sprintf(numline, "%d", count);
+fwrite(&numline, sizeof(char)*counts,1, stdout);
+fwrite(&line[a], sizeof(char), 1, stdout);
+}
+}
+}
 fclose(fp);
+}
 exit(0);
 }
+
+//Cody Kiedaisch

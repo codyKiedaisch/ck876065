@@ -8,7 +8,10 @@
 
 int main (int argc, char *argv[])
 {
-FILE *fp = fopen("my-cat.c", "r");
+for(int i; i<argc; i++)
+{
+FILE *fp = fopen(argv[i], "r");
+
 	if(fp == NULL)
 	{
 	printf("my-cat: cannot open file\n");
@@ -20,6 +23,8 @@ FILE *fp = fopen("my-cat.c", "r");
 	while(fgets(buffer,EOL,fp))
 	printf("%s",buffer);
 	}
-fclose(fp);
+}
 exit(0);
 }
+
+//Cody Kiedaisch
