@@ -1,28 +1,13 @@
 /*
 * my-unzip.c
 */
-
-
-
-//change method names
-//put my name on it so it looks normal
-//turn in at end of semester
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
 
-char cat1(int x, int y)
-{
-unsigned pow = 10;
-while(y>= pow)
-pow *= 10;
-return x * pow +y;
-}
-
+#define EOL 999999
 
 void printOutput(int num, char character)
 {
@@ -34,6 +19,13 @@ count++;
 }
 }
 
+char writeOut(int x, int y)
+{
+unsigned pow =10;
+while(y>= pow)
+pow*= 10;
+return x * pow +y;
+}
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +53,7 @@ if(numberTF)
 {
 numberTF = false;
 num2 = c;
-sum = cat1(num - '0', num2 - '0');
+sum = writeOut(num - '0', num2 - '0');
 }
 else
 {

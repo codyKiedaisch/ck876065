@@ -9,7 +9,6 @@
 
 int main (int argc, char *argv[])
 {
-
 char *line =NULL;
 char numline[500];
 int read;
@@ -18,7 +17,6 @@ size_t len =0;
 for(int i =1; i<argc; i++)
 {
 FILE *fp = fopen(argv[i], "r");
-
 if(fp ==NULL)
 {
 exit(1);
