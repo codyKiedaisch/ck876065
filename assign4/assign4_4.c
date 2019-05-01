@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -7,13 +7,22 @@
 #include <unistd.h>
 #include <string.h>
 
-void *pzip(void *arg)
+struct arg_struct
 {
-int s= *((int *)arg);
-int start= (s*st_size)/num_threads;
-int end ((s+1)*st_size/num_threads;
+int arg1;
+int arg2;
+int arg3;
+};
 
-while((/*something*/) !=0)
+void *pzip(void *arguments)
+{
+struct arg_struct *args = arguments;
+printf("Start- %d\n", args->arg1);
+printf("End- %d\n", args->arg2);
+printf("File Size- %d\n", args->arg3);
+
+/*
+while((something) !=0)
 {
 	int count=0;
 	for(file_memory[start];file_memory[start]<file_memory[end];start++)
@@ -30,13 +39,15 @@ while((/*something*/) !=0)
 		}
 		if(file_memory[start] != '|')
 		{
-		int counts = sprintf(/*numline*/, "%d", count);
+		int counts = sprintf(numline, "%d", count);
 		fwrite(&file_memory[start], sizeof(char),1, mmap);
-		fwritee(&/*numline*/,sizeof(char)*counts,1,mmap);
+		fwritee(&numline,sizeof(char)*counts,1,mmap);
 		}
 	}
 }
 close(fd);
+*/
+
 return NULL;
 }
 
@@ -60,6 +71,8 @@ char *file_memory= mmap(NULL,sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
 		//reads the file so that it can be written over
 
 threads = (pthread_t *) malloc(num_threads * sizeof(pthread_t));
+struct arg_struct *args = malloc(sizeof(struct arg_struct));
+
 printf("Test.txt: %s\n", file_memory);
 printf("File size: %ld\n", sb.st_size);
 int len =(sb.st_size)/num_threads;
@@ -67,10 +80,14 @@ printf("Segment size: %d\n", len);
 
 for(int i=0;i<num_threads;i++)
 {
-	pthread_create(&threads[i], NULL, pzip, NULL);//gotta change last arg
+	args->arg1 =(i*sb.st_size)/num_threads;
+	args->arg2 =((i+1)*sb.st_size)/num_threads;
+	args->arg3 = sb.st_size;
+
+	pthread_create(&threads[i], NULL, pzip, (void *)&args);
 }
 
-for(int j=0;j<num_threads;j++)
+for(int j=0;j<num_threads;j++) //threads that join it all together
 {
 	pthread_join(threads[j], NULL);
 }

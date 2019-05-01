@@ -6,6 +6,12 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+struct arg_struct
+{
+int arg1;
+int arg2;
+};
+
 /*
 void *read_file(void *arg)//have another arg in here for the file so i can use sb
 {
@@ -35,9 +41,9 @@ void *read_file(void *arg)//have another arg in here for the file so i can use s
 
 void *pzip(void *arguments)
 {
-	//struct arg_struct *args= arguments;
-	//printf("Starting value: %d\n", args.arg1);
-	//printf("End value: %d\n", args.arg2);
+	struct arg_struct *args= arguments;
+	printf("Starting value: %d\n", args->arg1);
+	printf("End value: %d\n", args->arg2);
 	//zips line segments made in the first thread
 	printf("New Thread\n");
 	return NULL;
@@ -78,19 +84,17 @@ printf("File size: %ld\n", sb.st_size);
 int len =(sb.st_size)/num_threads;
 printf("Length of segments: %d \n", len);
 
-/*
-int a=0;
 struct arg_struct *args = malloc(sizeof(struct arg_struct));
-for(a;a<sb.st_size;a+len)
+for(int a=0;a<sb.st_size;a+=len)
 {
 args->arg1=a;
 args->arg2=a+len;
-*/
+
 for(int i=0;i<num_threads;i++)
 {
-	pthread_create(&threads[i], NULL, pzip, NULL);
+	pthread_create(&threads[i], NULL, pzip, (void *)&args);
 }
-//}
+}
 
 
 for(int j=0;j<num_threads;j++)
