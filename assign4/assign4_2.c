@@ -6,10 +6,16 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+struct arg_struct
+{
+int arg1;
+int arg2;
+};
+
+/*
 void *read_file(void *arg)//have another arg in here for the file so i can use sb
 {
 
-/*
 	//gotta get this into a loop that makes seperate line segments from the file for pzip
 	//correctly divides file into line segments based on the size of the file/num_threads
 	int s= *((int *)arg);
@@ -24,20 +30,26 @@ void *read_file(void *arg)//have another arg in here for the file so i can use s
 	}
 	printf("Thread %d start zipping from %d and ending at %d\n", s, start, end);
 
-*/
+
 
 	printf("New Thread\n");
 	return NULL;
 
 }
+*/
 
-/*
-void *pzip(void *arg)
+
+void *pzip(void *arguments)
 {
+	struct arg_struct *args= arguments;
+	printf("Starting value: %d\n", args->arg1);
+	printf("End value: %d\n", args->arg2);
 	//zips line segments made in the first thread
+	printf("New Thread\n");
 	return NULL;
 }
 
+/*
 void *write(void *arg)
 {
 	//writes zipped stuff back to file
@@ -46,6 +58,7 @@ void *write(void *arg)
 	return NULL;
 }
 */
+
 
 int main(int argc, char *argv[])
 {
@@ -61,39 +74,34 @@ if(fstat(fd,&sb) == -1)
 {
 	perror("couldn't get file size\n"); //file couldnt be opened
 }
-int st_size=0;
-char *file_memory = mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+char *file_in_memory = mmap(NULL,sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 		//reads the file so that it can be written over
 
-
+printf("Test.txt: %s\n", file_in_memory);
 threads = (pthread_t *) malloc(num_threads * sizeof(pthread_t));//makes equal sized threads?
-if(atoi(argv[1])>=2)
-{
+
 printf("File size: %ld\n", sb.st_size);
-pthread_create(&threads[0], NULL, read_file, NULL);//creates first thread- for reading
+int len =(sb.st_size)/num_threads;
+printf("Length of segments: %d \n", len);
+
+struct arg_struct *args = malloc(sizeof(struct arg_struct));
+for(int a=0;a<sb.st_size;a+=len)
+{
+args->arg1=a;
+args->arg2=a+len;
+
+for(int i=0;i<num_threads;i++)
+{
+	pthread_create(&threads[i], NULL, pzip, (void *)&args);
 }
-else
-{
-//pthread_create(&threads[0], NULL, pzip, NULL);
-printf("File size: %ld\n", sb.st_size);
-exit(0);
 }
 
-//either have pzip threads made in read thread or here, idk yet
-//but if its made outside of read it would be here
-/*
-int i=1;
-for(i;i<num_threads-1;i++)
-{
-pthread_create(&threads[i], NULL, pzip, NULL);
-}
-*/
 
-int j =0;//might have to change to either 0 or 1 depending on how program goes
-for(j;j<num_threads;j++)
+for(int j=0;j<num_threads;j++)
 {
 	pthread_join(threads[j],NULL);//joins threads together
 }
+
 
 printf("Main Thread\n");
 close(fd);//closes the file
