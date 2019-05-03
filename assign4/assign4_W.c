@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -11,42 +12,47 @@ struct arg_struct
 {
 int arg1;
 int arg2;
-char arg3;
-};
+char *arg3;
+}args;
 
 void *pzip(void *arguments)
 {
 struct arg_struct *args = arguments; //all the numbers keep changing
-printf("Start- %d\n", args->arg1);
-printf("End- %d\n", args->arg2);
-printf("File- %d\n", args->arg3);
+
+int start = args->arg1;
+int end = args->arg2;
+char *file = args->arg3;
+
+//printf("Start- %d\n", start);
+//printf("End- %d\n", end);
+//printf("File- %d\n", *file);
 
 /*
-while(file_memory[arg1] != file_memory[arg2])
+while(*file[start] != *file[start++])
 {
+	char *numline[100];
 	int count=0;
-	for(arg1;arg1<arg2;arg1++)
+	for(start;start<end;start++)
 	{
 		count=1;
-		while(file_memory[arg1] == file_memory[arg1++])
+		while(file[start] == file[start++])
 		{
-		char *numline = file_memory[arg1];
+		numline += file[start];
 		count++;
 		}
 
-		if(file_memory[arg1] == '\n')
+		if(file[start] == '\n')
 		{
 		printf("|");
 		}
-		if(file_memory[arg1] != '|')
+		if(file[start] != '|')
 		{
-		int counts = sprintf(numline, "%d", count);
-		fwrite(&file_memory[arg1], sizeof(char),1, mmap);
+		int counts = sprintf(*numline, "%d", count);
+		fwrite(&file[start], sizeof(char),1, mmap);
 		fwrite(&numline,sizeof(char)*counts,1,mmap);
 		}
 	}
 }
-close(fd);
 */
 return NULL;
 }
@@ -71,20 +77,22 @@ char *file_memory= mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd
 		//reads the file so that it can be written over
 
 threads = (pthread_t *) malloc(num_threads * sizeof(pthread_t));
-struct arg_struct *args = malloc(sizeof(struct arg_struct));
 
-printf("Test.txt: %s\n", file_memory);
-printf("File size: %ld\n", sb.st_size);
+//printf("Test.txt: %s\n", file_memory);
+//printf("File size: %ld\n", sb.st_size);
 int len =(sb.st_size)/num_threads;
-printf("Segment size: %d\n", len);
+//printf("Segment size: %d\n", len);
+
+
 
 for(int i=0;i<num_threads;i++)
 {
-	args->arg1 =(i*sb.st_size)/num_threads;
-	args->arg2 =((i+1)*sb.st_size)/num_threads;
-	args->arg3 = *file_memory;
+struct arg_struct *args = malloc(sizeof(struct arg_struct));
+	args->arg1 =i*len;
+	args->arg2 =((i+1)*len);
+	args->arg3 =file_memory;
 
-	pthread_create(&threads[i], NULL, pzip, (void *)&args);
+	pthread_create(&threads[i], NULL, pzip, (void*)args);
 }
 
 for(int j=0;j<num_threads;j++) //joins all threads together
@@ -92,7 +100,7 @@ for(int j=0;j<num_threads;j++) //joins all threads together
 	pthread_join(threads[j], NULL);
 }
 
-printf("Main Program\n");
+//printf("Main Program\n");
 close(fd);
 
 }
