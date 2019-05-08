@@ -21,39 +21,41 @@ struct arg_struct *args = arguments; //all the numbers keep changing
 
 int start = args->arg1;
 int end = args->arg2;
-char *file = args->arg3;
 
-//printf("Start- %d\n", start);
-//printf("End- %d\n", end);
-//printf("File- %d\n", *file);
+//printf("Start- %d\n", start); //check if start is working
+//printf("End- %d\n", end); //check if end is working
+//printf("File- %s\n", args->arg3); //check if file came thru
 
-/*
-while(*file[start] != *file[start++])
+
+while(args->arg3[start] == args->arg3[start++])
 {
+	printf("While loop 1"); //check if gets into first while loop
 	char *numline[100];
 	int count=0;
 	for(start;start<end;start++)
 	{
+		printf("For loop"); //checks if gets into first for loop
 		count=1;
-		while(file[start] == file[start++])
+		while(args->arg3[start] == args->arg3[start++])
 		{
-		numline += file[start];
+		printf("While loop 2"); //checks if gets into 2nd while loop
+		numline + args->arg3[start];
 		count++;
 		}
 
-		if(file[start] == '\n')
+		if(args->arg3[start] == '\n')
 		{
 		printf("|");
 		}
-		if(file[start] != '|')
+		if(args->arg3[start] != '|')
 		{
 		int counts = sprintf(*numline, "%d", count);
-		fwrite(&file[start], sizeof(char),1, mmap);
-		fwrite(&numline,sizeof(char)*counts,1,mmap);
+		fwrite(&args->arg3[start], sizeof(char),1, stdout);
+		fwrite(&numline,sizeof(char)*counts,1,stdout);
 		}
 	}
 }
-*/
+
 return NULL;
 }
 
@@ -78,10 +80,10 @@ char *file_memory= mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd
 
 threads = (pthread_t *) malloc(num_threads * sizeof(pthread_t));
 
-//printf("Test.txt: %s\n", file_memory);
-//printf("File size: %ld\n", sb.st_size);
+//printf("Test.txt: %s\n", file_memory); //checks file was opened
+//printf("File size: %ld\n", sb.st_size); //checks file size
 int len =(sb.st_size)/num_threads;
-//printf("Segment size: %d\n", len);
+//printf("Segment size: %d\n", len); //checks math for len
 
 
 
